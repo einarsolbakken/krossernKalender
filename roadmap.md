@@ -1,6 +1,7 @@
 # GitHub Pages calendar
 
 - [x] Show a padlock marker on a locked door when hovering, focusing or tapping it; the door still stays closed.
+- [x] Play the luke 20 film after 7 seconds, with a "Spesialluke" notice over the photo just before it starts.
 
 - [x] Verify preview password contact fix and password visibility control on mobile and desktop with real password login.
 

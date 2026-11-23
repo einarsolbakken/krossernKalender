@@ -157,17 +157,29 @@ function Calendar() {
   );
 }
 
-// Special doors show the photo first, then fade into the film after a few seconds.
+// Special doors show the photo first, tease the film, then fade into it.
+const TEASER_MS = 4500;
+const FILM_MS = 7000;
+
 function DoorMedia({ door }: { door: DoorView }) {
+  const [teaser, setTeaser] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   useEffect(() => {
     if (!door.videoUrl) return;
-    const t = setTimeout(() => setShowVideo(true), 3000);
-    return () => clearTimeout(t);
+    const tease = setTimeout(() => setTeaser(true), TEASER_MS);
+    const film = setTimeout(() => setShowVideo(true), FILM_MS);
+    return () => { clearTimeout(tease); clearTimeout(film); };
   }, [door.videoUrl]);
   return (
     <div className="relative">
       <img src={door.imageUrl ?? ""} alt={door.caption ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
+      {teaser && !showVideo ? (
+        <div className="animate-in fade-in zoom-in-75 duration-500 pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="rounded-full bg-accent px-5 py-2 font-display text-2xl text-accent-foreground shadow-[var(--glow-gold)]">
+            Spesialluke 🎬
+          </span>
+        </div>
+      ) : null}
       {showVideo && door.videoUrl ? (
         <video src={door.videoUrl} autoPlay playsInline controls className="animate-in fade-in duration-700 absolute inset-0 h-full w-full rounded-md bg-background object-contain" />
       ) : null}
