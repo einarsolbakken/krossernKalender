@@ -1,5 +1,6 @@
 # GitHub Pages calendar
 
+- [x] Give the second image in luke 9 its own text, "Selfie med Vernazza i bakgrunnen🇮🇹", and make the text follow whichever image is on screen.
 - [x] Show a padlock marker on a locked door when hovering, focusing or tapping it; the door still stays closed.
 - [x] Play the luke 20 film after 7 seconds, with a "Spesialluke" notice over the photo just before it starts.
 

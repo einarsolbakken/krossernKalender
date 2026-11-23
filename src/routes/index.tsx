@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { clearFamilySession, fetchCalendar, getFamilySession, type DoorView } from "@/lib/calendar-api";
 import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
-import { calendarHeadline } from "@/lib/advent";
+import { calendarHeadline, doorCaptions } from "@/lib/advent";
 import { FamilyAccess } from "@/components/family-access";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,6 +49,7 @@ function Calendar() {
   const data = query.data ?? [];
   const [opened, setOpened] = useState<number[]>([]);
   const [active, setActive] = useState<DoorView | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [lockedFlash, setLockedFlash] = useState<{ day: number; n: number } | null>(null);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ function Calendar() {
     const next = Array.from(new Set([...opened, door.day]));
     setOpened(next);
     localStorage.setItem("opened-doors", JSON.stringify(next));
+    setActiveIdx(0);
     setActive(door);
   };
 
@@ -84,6 +86,7 @@ function Calendar() {
   const openDays = data.filter((d) => d.unlocked).map((d) => d.day);
   const today = Math.max(0, ...openDays);
   const headline = calendarHeadline(openDays, opened);
+  const activeCaptions = active ? doorCaptions(active) : [];
 
   return (
     <main className="relative mx-auto max-w-5xl px-4 py-12">
@@ -146,11 +149,11 @@ function Calendar() {
         <DialogContent className="max-w-lg bg-paper text-paper-foreground">
           <DialogTitle className="font-display text-3xl">Luke {active?.day}</DialogTitle>
           {active?.imageUrl ? (
-            <DoorMedia key={active.day} door={active} />
+            <DoorMedia key={active.day} door={active} idx={activeIdx} onIdx={setActiveIdx} />
           ) : (
             <p className="py-8 text-center">Denne pakken er ikke fylt ennå – kom tilbake litt senere! 🎁</p>
           )}
-          <DialogDescription className="text-center text-base text-paper-foreground">{active?.caption}</DialogDescription>
+          <DialogDescription className="text-center text-base text-paper-foreground">{activeCaptions[activeIdx] ?? ""}</DialogDescription>
         </DialogContent>
       </Dialog>
     </main>
@@ -161,11 +164,11 @@ function Calendar() {
 const TEASER_MS = 4500;
 const FILM_MS = 7000;
 
-function DoorMedia({ door }: { door: DoorView }) {
+function DoorMedia({ door, idx, onIdx }: { door: DoorView; idx: number; onIdx: (i: number) => void }) {
   const [teaser, setTeaser] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const images = [door.imageUrl ?? "", ...(door.extraImageUrls ?? [])];
-  const [idx, setIdx] = useState(0);
+  const captions = doorCaptions(door);
   useEffect(() => {
     if (!door.videoUrl) return;
     const tease = setTimeout(() => setTeaser(true), TEASER_MS);
@@ -174,11 +177,11 @@ function DoorMedia({ door }: { door: DoorView }) {
   }, [door.videoUrl]);
   return (
     <div className="relative">
-      <img src={images[idx] ?? ""} alt={door.caption ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
+      <img src={images[idx] ?? ""} alt={captions[idx] ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
       {images.length > 1 ? (
         <>
-          <button type="button" aria-label="Forrige bilde" onClick={() => setIdx((idx - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronLeft className="h-5 w-5" /></button>
-          <button type="button" aria-label="Neste bilde" onClick={() => setIdx((idx + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronRight className="h-5 w-5" /></button>
+          <button type="button" aria-label="Forrige bilde" onClick={() => onIdx((idx - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronLeft className="h-5 w-5" /></button>
+          <button type="button" aria-label="Neste bilde" onClick={() => onIdx((idx + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronRight className="h-5 w-5" /></button>
           <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-background/80 px-2 text-sm text-foreground">{idx + 1} / {images.length}</span>
         </>
       ) : null}

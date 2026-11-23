@@ -1,0 +1,1 @@
+ALTER TABLE public.doors ADD COLUMN extra_captions text[] NOT NULL DEFAULT '{}';

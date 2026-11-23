@@ -31,3 +31,8 @@ export function calendarHeadline(openDays: number[], openedDays: number[]) {
     ? "Dagens luke er åpnet"
     : "Dagens luke er klar til å åpnes - trykk på pakken";
 }
+
+// Every image in a door carries its own text: the door caption first, then one per extra image.
+export function doorCaptions(door: { caption: string | null; extraCaptions?: string[] }) {
+  return [door.caption ?? "", ...(door.extraCaptions ?? [])];
+}

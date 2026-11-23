@@ -48,6 +48,7 @@ export type Database = {
         Row: {
           caption: string | null
           day: number
+          extra_captions: string[]
           extra_image_paths: string[]
           image_path: string
           updated_at: string
@@ -56,6 +57,7 @@ export type Database = {
         Insert: {
           caption?: string | null
           day: number
+          extra_captions?: string[]
           extra_image_paths?: string[]
           image_path: string
           updated_at?: string
@@ -64,6 +66,7 @@ export type Database = {
         Update: {
           caption?: string | null
           day?: number
+          extra_captions?: string[]
           extra_image_paths?: string[]
           image_path?: string
           updated_at?: string

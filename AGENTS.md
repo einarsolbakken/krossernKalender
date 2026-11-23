@@ -38,3 +38,4 @@ use the editor.
 - Stage Pages files from Nitro's .output/public into dist/client after recursive safety checks; never copy .output/server, because Pages must contain only browser files.
 - Set the SPA maskPath to the same repository base path as the router and asset base; rendering the shell at / outside that base creates an initial not-found state and hydration mismatch.
 - Development calendar requests always use the same-origin preview server; static production builds use the configured API origin so unpublished changes cannot break preview login through stale hosted endpoints.
+- Every image in a door has its own text: the door caption belongs to the first image and extra_captions holds one text per extra image in order; the open dialog shows the text of the image currently on screen.
