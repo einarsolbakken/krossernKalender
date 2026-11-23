@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { clearFamilySession, fetchCalendar, getFamilySession, type DoorView } from "@/lib/calendar-api";
-import { Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import { calendarHeadline } from "@/lib/advent";
 import { FamilyAccess } from "@/components/family-access";
 import { Button } from "@/components/ui/button";
@@ -164,6 +164,8 @@ const FILM_MS = 7000;
 function DoorMedia({ door }: { door: DoorView }) {
   const [teaser, setTeaser] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const images = [door.imageUrl ?? "", ...(door.extraImageUrls ?? [])];
+  const [idx, setIdx] = useState(0);
   useEffect(() => {
     if (!door.videoUrl) return;
     const tease = setTimeout(() => setTeaser(true), TEASER_MS);
@@ -172,7 +174,14 @@ function DoorMedia({ door }: { door: DoorView }) {
   }, [door.videoUrl]);
   return (
     <div className="relative">
-      <img src={door.imageUrl ?? ""} alt={door.caption ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
+      <img src={images[idx] ?? ""} alt={door.caption ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
+      {images.length > 1 ? (
+        <>
+          <button type="button" aria-label="Forrige bilde" onClick={() => setIdx((idx - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronLeft className="h-5 w-5" /></button>
+          <button type="button" aria-label="Neste bilde" onClick={() => setIdx((idx + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground shadow"><ChevronRight className="h-5 w-5" /></button>
+          <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-background/80 px-2 text-sm text-foreground">{idx + 1} / {images.length}</span>
+        </>
+      ) : null}
       {teaser && !showVideo ? (
         <div className="animate-in fade-in zoom-in-75 duration-500 pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="rounded-full bg-accent px-5 py-2 font-display text-2xl text-accent-foreground shadow-[var(--glow-gold)]">

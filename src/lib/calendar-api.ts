@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { calendarEndpointOrigin, requestCalendar } from "@/lib/calendar-endpoint";
 
-export type DoorView = { day: number; unlocked: boolean; imageUrl: string | null; caption: string | null; videoUrl?: string | null };
+export type DoorView = { day: number; unlocked: boolean; imageUrl: string | null; caption: string | null; videoUrl?: string | null; extraImageUrls?: string[] };
 
 const FAMILY_SESSION_KEY = "calendar-family-session";
 export function getFamilySession() { return sessionStorage.getItem(FAMILY_SESSION_KEY); }

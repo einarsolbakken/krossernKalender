@@ -1,0 +1,1 @@
+ALTER TABLE public.doors ADD COLUMN extra_image_paths text[] NOT NULL DEFAULT '{}';
