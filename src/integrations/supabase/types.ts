@@ -52,6 +52,7 @@ export type Database = {
           extra_image_paths: string[]
           image_path: string
           updated_at: string
+          video_caption: string | null
           video_path: string | null
         }
         Insert: {
@@ -61,6 +62,7 @@ export type Database = {
           extra_image_paths?: string[]
           image_path: string
           updated_at?: string
+          video_caption?: string | null
           video_path?: string | null
         }
         Update: {
@@ -70,6 +72,7 @@ export type Database = {
           extra_image_paths?: string[]
           image_path?: string
           updated_at?: string
+          video_caption?: string | null
           video_path?: string | null
         }
         Relationships: []

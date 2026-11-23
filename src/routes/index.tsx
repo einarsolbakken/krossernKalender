@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { clearFamilySession, fetchCalendar, getFamilySession, type DoorView } from "@/lib/calendar-api";
 import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
-import { calendarHeadline, doorCaptions } from "@/lib/advent";
+import { activeDoorCaption, calendarHeadline, doorCaptions } from "@/lib/advent";
 import { FamilyAccess } from "@/components/family-access";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,6 +51,7 @@ function Calendar() {
   const [active, setActive] = useState<DoorView | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [lockedFlash, setLockedFlash] = useState<{ day: number; n: number } | null>(null);
+  const [videoOn, setVideoOn] = useState(false);
 
   useEffect(() => {
     if (!lockedFlash) return;
@@ -79,6 +80,7 @@ function Calendar() {
     setOpened(next);
     localStorage.setItem("opened-doors", JSON.stringify(next));
     setActiveIdx(0);
+    setVideoOn(false);
     setActive(door);
   };
 
@@ -86,7 +88,7 @@ function Calendar() {
   const openDays = data.filter((d) => d.unlocked).map((d) => d.day);
   const today = Math.max(0, ...openDays);
   const headline = calendarHeadline(openDays, opened);
-  const activeCaptions = active ? doorCaptions(active) : [];
+  const activeCaption = active ? activeDoorCaption(active, activeIdx, videoOn) : "";
 
   return (
     <main className="relative mx-auto max-w-5xl px-4 py-12">
@@ -149,11 +151,11 @@ function Calendar() {
         <DialogContent className="max-w-lg bg-paper text-paper-foreground">
           <DialogTitle className="font-display text-3xl">Luke {active?.day}</DialogTitle>
           {active?.imageUrl ? (
-            <DoorMedia key={active.day} door={active} idx={activeIdx} onIdx={setActiveIdx} />
+            <DoorMedia key={active.day} door={active} idx={activeIdx} onIdx={setActiveIdx} onVideoStart={() => setVideoOn(true)} />
           ) : (
             <p className="py-8 text-center">Denne pakken er ikke fylt ennå – kom tilbake litt senere! 🎁</p>
           )}
-          <DialogDescription className="text-center text-base text-paper-foreground">{activeCaptions[activeIdx] ?? ""}</DialogDescription>
+          <DialogDescription className="text-center text-base text-paper-foreground">{activeCaption}</DialogDescription>
         </DialogContent>
       </Dialog>
     </main>
@@ -164,7 +166,7 @@ function Calendar() {
 const TEASER_MS = 4500;
 const FILM_MS = 7000;
 
-function DoorMedia({ door, idx, onIdx }: { door: DoorView; idx: number; onIdx: (i: number) => void }) {
+function DoorMedia({ door, idx, onIdx, onVideoStart }: { door: DoorView; idx: number; onIdx: (i: number) => void; onVideoStart: () => void }) {
   const [teaser, setTeaser] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const images = [door.imageUrl ?? "", ...(door.extraImageUrls ?? [])];
@@ -172,7 +174,7 @@ function DoorMedia({ door, idx, onIdx }: { door: DoorView; idx: number; onIdx: (
   useEffect(() => {
     if (!door.videoUrl) return;
     const tease = setTimeout(() => setTeaser(true), TEASER_MS);
-    const film = setTimeout(() => setShowVideo(true), FILM_MS);
+    const film = setTimeout(() => { setShowVideo(true); onVideoStart(); }, FILM_MS);
     return () => { clearTimeout(tease); clearTimeout(film); };
   }, [door.videoUrl]);
   return (

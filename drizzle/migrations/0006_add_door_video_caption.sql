@@ -1,0 +1,1 @@
+ALTER TABLE public.doors ADD COLUMN IF NOT EXISTS video_caption text;

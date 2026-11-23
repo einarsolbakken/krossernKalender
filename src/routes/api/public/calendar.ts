@@ -78,12 +78,12 @@ export const Route = createFileRoute("/api/public/calendar")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const result: DoorView[] = Array.from({ length: 24 }, (_, i) => ({ day: i + 1, unlocked: days.includes(i + 1), imageUrl: null, caption: null, videoUrl: null, extraImageUrls: [], extraCaptions: [] }));
         if (days.length) {
-          const { data: rows, error: rowsError } = await supabaseAdmin.from("doors").select("day,image_path,caption,video_path,extra_image_paths,extra_captions").in("day", days);
+          const { data: rows, error: rowsError } = await supabaseAdmin.from("doors").select("day,image_path,caption,video_path,video_caption,extra_image_paths,extra_captions").in("day", days);
           if (rowsError) return Response.json({ error: "Unavailable" }, { status: 503, headers });
           await Promise.all((rows ?? []).map(async (row) => {
             const { data } = await supabaseAdmin.storage.from("advent").createSignedUrl(row.image_path, 300);
             const door = result.find((d) => d.day === row.day);
-            if (door) { door.imageUrl = data?.signedUrl ?? null; door.caption = row.caption; door.extraCaptions = row.extra_captions ?? []; }
+            if (door) { door.imageUrl = data?.signedUrl ?? null; door.caption = row.caption; door.videoCaption = row.video_caption ?? null; door.extraCaptions = row.extra_captions ?? []; }
             if (door && row.extra_image_paths?.length) {
               const urls = await Promise.all(row.extra_image_paths.map(async (p: string) => (await supabaseAdmin.storage.from("advent").createSignedUrl(p, 300)).data?.signedUrl ?? null));
               door.extraImageUrls = urls.filter((u): u is string => !!u);

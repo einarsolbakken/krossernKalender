@@ -36,3 +36,13 @@ export function calendarHeadline(openDays: number[], openedDays: number[]) {
 export function doorCaptions(door: { caption: string | null; extraCaptions?: string[] }) {
   return [door.caption ?? "", ...(door.extraCaptions ?? [])];
 }
+
+// While the film plays its own text shows; otherwise the text of the image on screen shows.
+export function activeDoorCaption(
+  door: { caption: string | null; extraCaptions?: string[]; videoCaption?: string | null },
+  idx: number,
+  videoPlaying: boolean,
+) {
+  if (videoPlaying && door.videoCaption) return door.videoCaption;
+  return doorCaptions(door)[idx] ?? "";
+}
