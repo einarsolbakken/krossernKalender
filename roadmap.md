@@ -7,6 +7,7 @@
 - [x] Replace SMS sign-in with a server-verified shared family password; desktop/mobile login, wrong-password denial, refresh and sign-out verified with real password.
 - [x] Show "Dagens luke er klar til å åpnes - trykk på pakken" before today's door opens and "Dagens luke er åpnet" after.
 - [x] Restore the Oslo date lock so one door opens per day from 1 December; verify preview and published sites.
+- [x] Unlock all 24 doors again for the owner's image and caption review on 23 Nov 2026.
 - [ ] Deploy shared-password access to the public sites; requires Lovable publishing and the next GitHub Pages Actions deployment.
 
 - [x] Align the static shell's initial address with the repository base path after renaming.

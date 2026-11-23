@@ -32,13 +32,14 @@ describe("door unlocking", () => {
       Array.from({ length: 24 }, (_, i) => i + 1),
     );
   });
-  it("never hands out the test bypass from the shipped calendar code", async () => {
+  it("opens every door in both calendar read paths during owner review", async () => {
     const sources = await Promise.all([
       import("@/lib/doors.functions?raw"),
       import("@/routes/api/public/calendar?raw"),
     ]);
     for (const source of sources) {
-      expect(source.default).not.toContain("calendarDays(new Date(), true)");
+      expect(source.default).toContain("calendarDays(new Date(), true)");
+      expect(source.default).not.toContain("calendarDays(new Date(), false)");
     }
   });
   it("asks for the package to be opened before today's door is opened", () => {
