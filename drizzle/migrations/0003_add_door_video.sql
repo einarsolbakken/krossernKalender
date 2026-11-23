@@ -1,0 +1,1 @@
+ALTER TABLE public.doors ADD COLUMN video_path text;

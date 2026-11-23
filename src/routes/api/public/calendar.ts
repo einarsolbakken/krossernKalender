@@ -76,14 +76,18 @@ export const Route = createFileRoute("/api/public/calendar")({
         const days = calendarDays(new Date(), true);
         // Shared sessions authorize read-only calendar access, never owner operations.
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const result: DoorView[] = Array.from({ length: 24 }, (_, i) => ({ day: i + 1, unlocked: days.includes(i + 1), imageUrl: null, caption: null }));
+        const result: DoorView[] = Array.from({ length: 24 }, (_, i) => ({ day: i + 1, unlocked: days.includes(i + 1), imageUrl: null, caption: null, videoUrl: null }));
         if (days.length) {
-          const { data: rows, error: rowsError } = await supabaseAdmin.from("doors").select("day,image_path,caption").in("day", days);
+          const { data: rows, error: rowsError } = await supabaseAdmin.from("doors").select("day,image_path,caption,video_path").in("day", days);
           if (rowsError) return Response.json({ error: "Unavailable" }, { status: 503, headers });
           await Promise.all((rows ?? []).map(async (row) => {
             const { data } = await supabaseAdmin.storage.from("advent").createSignedUrl(row.image_path, 300);
             const door = result.find((d) => d.day === row.day);
             if (door) { door.imageUrl = data?.signedUrl ?? null; door.caption = row.caption; }
+            if (door && row.video_path) {
+              const { data: v } = await supabaseAdmin.storage.from("advent").createSignedUrl(row.video_path, 1800);
+              door.videoUrl = v?.signedUrl ?? null;
+            }
           }));
         }
         return Response.json(result, { headers });

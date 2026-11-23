@@ -146,7 +146,7 @@ function Calendar() {
         <DialogContent className="max-w-lg bg-paper text-paper-foreground">
           <DialogTitle className="font-display text-3xl">Luke {active?.day}</DialogTitle>
           {active?.imageUrl ? (
-            <img src={active.imageUrl} alt={active.caption ?? `Bilde for luke ${active.day}`} className="w-full rounded-md" />
+            <DoorMedia key={active.day} door={active} />
           ) : (
             <p className="py-8 text-center">Denne pakken er ikke fylt ennå – kom tilbake litt senere! 🎁</p>
           )}
@@ -154,5 +154,23 @@ function Calendar() {
         </DialogContent>
       </Dialog>
     </main>
+  );
+}
+
+// Special doors show the photo first, then fade into the film after a few seconds.
+function DoorMedia({ door }: { door: DoorView }) {
+  const [showVideo, setShowVideo] = useState(false);
+  useEffect(() => {
+    if (!door.videoUrl) return;
+    const t = setTimeout(() => setShowVideo(true), 3000);
+    return () => clearTimeout(t);
+  }, [door.videoUrl]);
+  return (
+    <div className="relative">
+      <img src={door.imageUrl ?? ""} alt={door.caption ?? `Bilde for luke ${door.day}`} className={`w-full rounded-md transition-opacity duration-700 ${showVideo ? "opacity-0" : "opacity-100"}`} />
+      {showVideo && door.videoUrl ? (
+        <video src={door.videoUrl} autoPlay playsInline controls className="animate-in fade-in duration-700 absolute inset-0 h-full w-full rounded-md bg-background object-contain" />
+      ) : null}
+    </div>
   );
 }

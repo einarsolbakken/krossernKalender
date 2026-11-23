@@ -50,18 +50,21 @@ export type Database = {
           day: number
           image_path: string
           updated_at: string
+          video_path: string | null
         }
         Insert: {
           caption?: string | null
           day: number
           image_path: string
           updated_at?: string
+          video_path?: string | null
         }
         Update: {
           caption?: string | null
           day?: number
           image_path?: string
           updated_at?: string
+          video_path?: string | null
         }
         Relationships: []
       }
