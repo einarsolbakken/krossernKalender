@@ -15,9 +15,9 @@ const ORDER = [7, 18, 2, 23, 11, 5, 15, 20, 1, 9, 24, 13, 4, 17, 21, 8, 12, 3, 1
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Krossern's bildekalender 2026" },
+      { title: "Krossern's bildejulekalender🎅🧑‍🎄🎄" },
       { name: "description", content: "Åpne dagens pakke – en ny hyggelig overraskelse hver dag frem til jul." },
-      { property: "og:title", content: "Krossern's bildekalender 2026" },
+      { property: "og:title", content: "Krossern's bildejulekalender🎅🧑‍🎄🎄" },
       { property: "og:description", content: "Åpne dagens pakke – en ny overraskelse hver dag frem til jul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -95,7 +95,7 @@ function Calendar() {
       <Snow />
       <header className="relative mb-10 text-center">
         <p className="text-sm uppercase tracking-[0.3em] text-ribbon">Desember</p>
-        <h1 className="mt-2 text-4xl font-bold sm:text-6xl">Krossern's bildekalender 2026</h1>
+        <h1 className="mt-2 text-4xl font-bold sm:text-6xl">Krossern's bildejulekalender🎅🧑‍🎄🎄</h1>
         {signedIn && <p className="mt-3 text-muted-foreground">{headline}</p>}
       </header>
 
