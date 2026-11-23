@@ -73,7 +73,7 @@ export const Route = createFileRoute("/api/public/calendar")({
         const status = calendarAccessDecision(true, !accessError && approved === true);
         if (status !== 200) return Response.json({ error: "Forbidden" }, { status, headers });
         }
-        const days = calendarDays(new Date(), true);
+        const days = calendarDays(new Date(), false);
         // Shared sessions authorize read-only calendar access, never owner operations.
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const result: DoorView[] = Array.from({ length: 24 }, (_, i) => ({ day: i + 1, unlocked: days.includes(i + 1), imageUrl: null, caption: null, videoUrl: null, extraImageUrls: [], extraCaptions: [] }));

@@ -30,7 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Door unlock logic lives in src/lib/advent.ts and is enforced server-side in getDoors; locked doors never get image URLs.
-- Both server calendar read paths currently pass the calendarDays review bypass so all 24 doors stay open for owner review; restore the Oslo daily lock only when the owner asks.
+- Both server calendar read paths use the Oslo date lock without a review bypass; one new door opens each December day and earlier doors remain open.
 - Owner roles are provisioned only after identifying the intended owner; claim_admin checks existing ownership and never grants it to the first visitor.
 - Pages ships only dist/client from a separate SPA build; private reads use the Lovable-hosted bearer-authenticated calendar endpoint with exact-origin CORS and server-verified family sessions.
 - Shared family passwords are server secrets; the calendar endpoint issues expiring HMAC-signed read-only sessions, bound to the current password so password changes revoke access. Browser session storage contains only the session token, never the password.

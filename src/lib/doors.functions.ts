@@ -8,7 +8,7 @@ export type DoorView = { day: number; unlocked: boolean; imageUrl: string | null
 export const getDoors = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }): Promise<DoorView[]> => {
   const { data: approved } = await context.supabase.rpc("has_calendar_access");
   if (!approved) throw new Error("Forbidden");
-  const open = calendarDays(new Date(), true);
+  const open = calendarDays(new Date(), false);
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const rows = open.length
     ? (await supabaseAdmin.from("doors").select("day,image_path,caption").in("day", open)).data ?? []

@@ -32,14 +32,14 @@ describe("door unlocking", () => {
       Array.from({ length: 24 }, (_, i) => i + 1),
     );
   });
-  it("opens every door in both calendar read paths during owner review", async () => {
+  it("uses the Oslo date lock in both calendar read paths", async () => {
     const sources = await Promise.all([
       import("@/lib/doors.functions?raw"),
       import("@/routes/api/public/calendar?raw"),
     ]);
     for (const source of sources) {
-      expect(source.default).toContain("calendarDays(new Date(), true)");
-      expect(source.default).not.toContain("calendarDays(new Date(), false)");
+      expect(source.default).toContain("calendarDays(new Date(), false)");
+      expect(source.default).not.toContain("calendarDays(new Date(), true)");
     }
   });
   it("asks for the package to be opened before today's door is opened", () => {
